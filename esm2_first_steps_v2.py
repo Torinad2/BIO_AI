@@ -1,20 +1,18 @@
 #RU: Требуются: pip install biopython matplotlib
 #EN: Requires: pip install biopython matplotlib
 
+#RU: Импорты в порядке isort/Ruff: стандартная библиотека, затем сторонние пакеты.
+#RU: Figure берём напрямую (без pyplot), поэтому выбирать бэкенд matplotlib не нужно.
+#EN: Imports in isort/Ruff order: standard library first, then third-party packages.
+#EN: Figure is imported directly (no pyplot), so there is no need to select a matplotlib backend.
 import random
 
 import numpy as np
 import requests
 import torch
-
-#RU: Бэкенд без окна: график просто сохраняется в файл
-#EN: Non-interactive backend: the plot is simply saved to a file
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-
 from Bio import Align
 from Bio.Align import substitution_matrices
+from matplotlib.figure import Figure
 from transformers import AutoModelForMaskedLM, AutoTokenizer
 
 #RU: Название предобученной модели (ESM-2, 12 слоёв, 35M параметров)
@@ -159,7 +157,11 @@ def plot_confidence(p_true: np.ndarray, entropy: np.ndarray, path: str) -> None:
         and prediction entropy; the DNA-binding domain is shaded.
     """
     x = np.arange(1, len(p_true) + 1)
-    fig, axes = plt.subplots(2, 1, figsize=(11, 6), sharex=True)
+
+    #RU: Figure без pyplot: не зависит от окна/бэкенда, график просто сохраняется в файл
+    #EN: Figure without pyplot: independent of any window/backend, the plot is simply saved to a file
+    fig = Figure(figsize=(11, 6))
+    axes = fig.subplots(2, 1, sharex=True)
 
     #RU: Верхняя панель: вероятность настоящей аминокислоты
     #EN: Top panel: probability of the true residue
@@ -183,7 +185,6 @@ def plot_confidence(p_true: np.ndarray, entropy: np.ndarray, path: str) -> None:
 
     fig.tight_layout()
     fig.savefig(path, dpi=150)
-    plt.close(fig)
 
 
 def aligned_pairs(seq_a: str, seq_b: str):
