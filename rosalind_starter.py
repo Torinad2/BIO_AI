@@ -22,6 +22,12 @@ def complement_dna(seq) -> str:
 
     return "".join(complement[n] for n in reverse)
 
+# --- 4. Rabbits and Recurrence Relations
+def rabbits(n, k) -> int:
+    pass
 
+# --- 5. Computing GC Content
+def compute_gc_content(seq):
+    pass
 
 print(complement_dna(dna))
